@@ -1,15 +1,15 @@
 'use client';
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Source_Code_Pro } from "next/font/google";
 import { usePathname, useRouter } from "next/navigation";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sourcePro = Source_Code_Pro({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
@@ -30,9 +30,8 @@ export default function RootLayout({ children }) {
     pathname === "/";
 
   return (
-    <html lang="pt-BR">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    <html lang="pt-BR">      <body
+        className={`${inter.variable} ${sourcePro.variable} antialiased`}
       >
         {!hideNavbar && (
           <header className="bg-[#2b4e4b] text-white shadow-md">
