@@ -14,8 +14,8 @@ export default function EditStand({ params }) {
     location: '',
     capacity: '',
     resources: '',
-    availability: '',
     projectId: '',
+    availability: ''
   });
 
   useEffect(() => {
@@ -24,40 +24,26 @@ export default function EditStand({ params }) {
       router.push('/login');
     } else {
       setCurrentUser(JSON.parse(user));
+      const stand = stands.find(s => s.id === Number(params.id));
+      if (stand) {
+        setFormData({
+          ...stand,
+          resources: stand.resources.join(', ')
+        });
+      }
     }
-
-    // Carregar dados do estande
-    const stand = stands.find(s => s.id === Number(params.id));
-    if (stand) {
-      setFormData({
-        name: stand.name,
-        location: stand.location,
-        capacity: stand.capacity,
-        resources: stand.resources.join(', '),
-        availability: stand.availability,
-        projectId: stand.projectId || '',
-      });
-    } else {
-      router.push('/dashboard/stands');
-    }
-  }, [params.id, stands, router]);
+  }, [router, stands, params.id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const updatedStands = stands.map(stand => {
-      if (stand.id === Number(params.id)) {
-        return {
-          ...stand,
-          ...formData,
-          resources: formData.resources.split(',').map(r => r.trim()),
-          capacity: parseInt(formData.capacity),
-          updatedAt: new Date().toISOString(),
-        };
-      }
-      return stand;
-    });
-
+    const updatedStands = stands.map(stand => 
+      stand.id === Number(params.id) ? {
+        ...stand,
+        ...formData,
+        capacity: Number(formData.capacity),
+        resources: formData.resources.split(',').map(r => r.trim())
+      } : stand
+    );
     setStands(updatedStands);
     router.push('/dashboard/stands');
   };
@@ -65,10 +51,10 @@ export default function EditStand({ params }) {
   if (!currentUser) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 shadow">
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(160,40%,98%)] to-[hsl(100,10%,99%)]">
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200/80 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-gray-800">
             Editar Estande
           </h1>
           <Button onClick={() => router.push('/dashboard/stands')}>
@@ -78,7 +64,7 @@ export default function EditStand({ params }) {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card>
+        <Card className="bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow duration-300">
           <form onSubmit={handleSubmit} className="space-y-6">
             <Input
               label="Nome do Estande"
@@ -107,18 +93,17 @@ export default function EditStand({ params }) {
               name="resources"
               value={formData.resources}
               onChange={(e) => setFormData({ ...formData, resources: e.target.value })}
-              placeholder="Ex: Projetor, TV, Mesa, Cadeiras"
               required
             />
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-200">
-                Status de Disponibilidade
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Status do Estande
               </label>
               <select
                 name="availability"
                 value={formData.availability}
                 onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
-                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >
                 <option value="disponivel">Disponível</option>
@@ -126,15 +111,15 @@ export default function EditStand({ params }) {
                 <option value="manutencao">Em Manutenção</option>
               </select>
             </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-200">
+            <div>
+              <label className="text-sm font-medium text-gray-700">
                 Projeto Associado
               </label>
               <select
                 name="projectId"
                 value={formData.projectId}
                 onChange={(e) => setFormData({ ...formData, projectId: e.target.value })}
-                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Selecione um projeto</option>
                 {projects.map((project) => (
@@ -144,7 +129,6 @@ export default function EditStand({ params }) {
                 ))}
               </select>
             </div>
-            
             <div className="flex gap-4 justify-end">
               <Button 
                 type="button" 
