@@ -23,7 +23,7 @@ Como Rodar o Projeto
 Clone o repositório:
 Bash
 
-git clone https://docs.github.com/articles/referencing-and-citing-content
+git clone https://github.com/wanessaguisso/sistemaprojetointegrador.git
 Navegue até a pasta do projeto:
 Bash
 
